@@ -1,40 +1,14 @@
 pipeline {
     agent any
-
     environment {
-        DOCKER_IMAGE = 'your-dockerhub-username/capstone-app'
+        GITHUB_REPO = 'https://github.com/Meetagarwal1234/Meet-Capstone.git'
     }
-
     stages {
         stage('Checkout Code') {
             steps {
-                git branch: 'main', url: 'https://github.com/your-repo/capstone-project.git'
-            }
-        }
-        
-        stage('Build with Maven') {
-            steps {
-                sh 'mvn clean package'
-            }
-        }
-
-        stage('Build Docker Image') {
-            steps {
-                sh 'docker build -t $DOCKER_IMAGE .'
-            }
-        }
-
-        stage('Push to Docker Hub') {
-            steps {
-                withDockerRegistry([credentialsId: 'docker-hub-credentials', url: '']) {
-                    sh 'docker push $DOCKER_IMAGE'
+                withCredentials([string(credentialsId: 'PAT_TOKEN', variable: 'GITHUB_PAT')]) {
+                    sh 'git clone https://Meetagarwal1234:$GITHUB_PAT@github.com/Meetagarwal1234/Meet-Capstone.git'
                 }
-            }
-        }
-
-        stage('Deploy to Kubernetes') {
-            steps {
-                sh 'kubectl apply -f k8s/deployment.yaml'
             }
         }
     }
