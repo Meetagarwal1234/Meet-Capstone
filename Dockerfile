@@ -1,4 +1,11 @@
-FROM tomcat:latest
-RUN cp -R  /usr/local/tomcat/webapps.dist/*  /usr/local/tomcat/webapps
-COPY ./*.war /usr/local/tomcat/webapps
+FROM openjdk:17-alpine
 
+RUN apk update && apk add maven
+
+WORKDIR /app
+
+COPY . .
+
+RUN mvn clean package
+
+CMD ["java", "-jar", "target/myapp.jar"]
